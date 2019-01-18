@@ -314,7 +314,7 @@ Offset _scaleAndFlipLine(
     left = rect.dx.toDouble();
   }
 
-  double top = imageSize.height - rect.dy;
+  double top = rect.dy;
 
   return Offset(left * scaleX, top * scaleY);
 }
