@@ -5,18 +5,42 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-
 import 'detector_painters.dart';
 import 'utils.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MaterialApp(home: _MyHomePage()));
+Future<void> main() async {
+  final FirebaseApp app = await FirebaseApp.configure(
+    name: 'ml-vision-a7a34',
+    options: const FirebaseOptions(
+      googleAppID: '*',
+      apiKey: '*',
+      databaseURL: '*',
+    ),
+  );
+  runApp(MaterialApp(home: MyHomePage(app: app)));
+}
 
-class _MyHomePage extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  final FirebaseApp app;
+  FirebaseDatabase database;
+  static DatabaseReference databaseFaces =
+      FirebaseDatabase.instance.reference().child('faces');
+
+  MyHomePage({this.app}) {
+    database = FirebaseDatabase(app: app);
+  }
+
+  static Future<void> pushFace(Map face) async {
+    databaseFaces.push().set(face);
+  }
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<_MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> {
   dynamic _scanResults;
   CameraController _camera;
 
@@ -26,6 +50,10 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   @override
   void initState() {
+    final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
+    database.setPersistenceEnabled(true);
+    database.setPersistenceCacheSizeBytes(10000000);
+
     super.initState();
     _initializeCamera();
   }
@@ -41,7 +69,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       if (_isDetecting) return;
 
       _isDetecting = true;
-
+print(image.width); print(image.height);
       final Detector currentDetector = _currentDetector;
       detect(image, _getDetectionMethod()).then(
         (dynamic result) {

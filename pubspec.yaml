@@ -6,11 +6,11 @@ dependencies:
   flutter:
     sdk: flutter
 
-  image_picker: ^0.4.5
-  cupertino_icons: ^0.1.2
+  image: 2.0.5
   firebase_ml_vision: 0.2.1
   camera: ^0.2.9
   firebase_core: ^0.2.5+1
+  firebase_database: ^1.0.5
 
 flutter:
   uses-material-design: true

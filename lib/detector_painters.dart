@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+import 'main.dart';
 
 enum Detector { barcode, face, label, cloudLabel, text }
 
@@ -156,6 +157,7 @@ class FaceDetectorPainter extends CustomPainter {
       }
 
       canvas.drawPoints(ui.PointMode.points, points, paint2);
+
       canvas.drawRect(
         _scaleAndFlipRectangle(
           rect: face.boundingBox,
@@ -166,6 +168,115 @@ class FaceDetectorPainter extends CustomPainter {
         ),
         paint,
       );
+
+      Map<String, Map<String, dynamic>> faceData = new Map();
+      faceData = {
+        'baseInfo': {
+          'smilingProbability': face.smilingProbability,
+          'headEulerAngleY': face.headEulerAngleY,
+          'headEulerAngleZ': face.headEulerAngleZ,
+          'leftEyeOpenProbability': face.leftEyeOpenProbability,
+          'rightEyeOpenProbability': face.rightEyeOpenProbability,
+        },
+        'imageInfo': {
+          'width': imageSize.width,
+          'height': imageSize.height,
+        },
+        'boundingBox': {
+          'left': face.boundingBox.left,
+          'right': face.boundingBox.right,
+          'top': face.boundingBox.top,
+          'bottom': face.boundingBox.bottom,
+          'bottomLeft': {
+            'x': face.boundingBox.bottomLeft.x,
+            'y': face.boundingBox.bottomLeft.y
+          },
+          'bottomRight': {
+            'x': face.boundingBox.bottomRight.x,
+            'y': face.boundingBox.bottomRight.y
+          },
+          'topLeft': {
+            'x': face.boundingBox.topLeft.x,
+            'y': face.boundingBox.topLeft.y
+          },
+          'topRight': {
+            'x': face.boundingBox.topRight.x,
+            'y': face.boundingBox.topRight.y
+          },
+        }
+      };
+
+      if (face.getLandmark(FaceLandmarkType.leftEye) != null) {
+        faceData['leftEye'] = {
+          'x': face.getLandmark(FaceLandmarkType.leftEye).position.x,
+          'y': face.getLandmark(FaceLandmarkType.leftEye).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.rightEye) != null) {
+        faceData['rightEye'] = {
+          'x': face.getLandmark(FaceLandmarkType.rightEye).position.x,
+          'y': face.getLandmark(FaceLandmarkType.rightEye).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.leftCheek) != null) {
+        faceData['leftCheek'] = {
+          'x': face.getLandmark(FaceLandmarkType.leftCheek).position.x,
+          'y': face.getLandmark(FaceLandmarkType.leftCheek).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.rightCheek) != null) {
+        faceData['rightCheek'] = {
+          'x': face.getLandmark(FaceLandmarkType.rightCheek).position.x,
+          'y': face.getLandmark(FaceLandmarkType.rightCheek).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.leftEar) != null) {
+        faceData['leftEar'] = {
+          'x': face.getLandmark(FaceLandmarkType.leftEar).position.x,
+          'y': face.getLandmark(FaceLandmarkType.leftEar).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.rightEar) != null) {
+        faceData['rightEar'] = {
+          'x': face.getLandmark(FaceLandmarkType.rightEar).position.x,
+          'y': face.getLandmark(FaceLandmarkType.rightEar).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.leftMouth) != null) {
+        faceData['leftMouth'] = {
+          'x': face.getLandmark(FaceLandmarkType.leftMouth).position.x,
+          'y': face.getLandmark(FaceLandmarkType.leftMouth).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.rightMouth) != null) {
+        faceData['rightMouth'] = {
+          'x': face.getLandmark(FaceLandmarkType.rightMouth).position.x,
+          'y': face.getLandmark(FaceLandmarkType.rightMouth).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.bottomMouth) != null) {
+        faceData['bottomMouth'] = {
+          'x': face.getLandmark(FaceLandmarkType.bottomMouth).position.x,
+          'y': face.getLandmark(FaceLandmarkType.bottomMouth).position.y
+        };
+      }
+
+      if (face.getLandmark(FaceLandmarkType.noseBase) != null) {
+        faceData['noseBase'] = {
+          'x': face.getLandmark(FaceLandmarkType.noseBase).position.x,
+          'y': face.getLandmark(FaceLandmarkType.noseBase).position.y
+        };
+      }
+
+      MyHomePage.pushFace(faceData);
     }
   }
 
