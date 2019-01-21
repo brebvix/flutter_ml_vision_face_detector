@@ -24,6 +24,8 @@ Future<void> main() async {
 
 class MyHomePage extends StatefulWidget {
   final FirebaseApp app;
+  static CameraImage currentImage;
+
   FirebaseDatabase database;
   static DatabaseReference databaseFaces =
       FirebaseDatabase.instance.reference().child('faces');
@@ -69,7 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_isDetecting) return;
 
       _isDetecting = true;
-print(image.width); print(image.height);
+
+      MyHomePage.currentImage = image;
+
       final Detector currentDetector = _currentDetector;
       detect(image, _getDetectionMethod()).then(
         (dynamic result) {

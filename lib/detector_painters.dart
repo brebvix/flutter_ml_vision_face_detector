@@ -8,6 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
+//import 'package:image/image.dart' as imageLib;
+import 'utils.dart';
+//import 'dart:convert';
 
 enum Detector { barcode, face, label, cloudLabel, text }
 
@@ -181,6 +184,7 @@ class FaceDetectorPainter extends CustomPainter {
         'imageInfo': {
           'width': imageSize.width,
           'height': imageSize.height,
+          'bytes': ''
         },
         'boundingBox': {
           'left': face.boundingBox.left,
@@ -205,6 +209,17 @@ class FaceDetectorPainter extends CustomPainter {
           },
         }
       };
+      faceData['imageInfo']['bytes'] =
+          concatenatePlanes(MyHomePage.currentImage.planes); // TODO: Need resize
+//        jsonEncode(imageLib
+//          .copyResize(
+//              imageLib.Image.fromBytes(
+//                  MyHomePage.currentImage.width,
+//                  MyHomePage.currentImage.height,
+//                  concatenatePlanes(MyHomePage.currentImage.planes)),
+//              (MyHomePage.currentImage.width / 100 * 20).toInt(),
+//              (MyHomePage.currentImage.height / 100 * 20).toInt())
+//          .getBytes());
 
       if (face.getLandmark(FaceLandmarkType.leftEye) != null) {
         faceData['leftEye'] = {
